@@ -1,7 +1,15 @@
 {
   "name": "stashaway-api",
   "jest": {
-    "preset": "@shelf/jest-mongodb"
+    "preset": "@shelf/jest-mongodb",
+    "coverageThreshold": {
+      "global": {
+        "branches": 90,
+        "functions": 90,
+        "lines": 90,
+        "statements": 90
+      }
+    }
   },
   "version": "1.0.0",
   "description": "Backend POC for Stashaway academy",
@@ -10,7 +18,8 @@
     "test": "jest",
     "test:watch": "jest --watchAll",
     "start": "node server.js",
-    "start:dev": "nodemon server.js"
+    "start:dev": "nodemon server.js",
+    "coverage": "jest --coverage"
   },
   "repository": {
     "type": "git",

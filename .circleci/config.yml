@@ -24,7 +24,7 @@ jobs:
             - node_modules
       - run:
           name: Run unit tests
-          command: npm test
+          command: npm coverage
   deploy:
     docker:
       - image: circleci/node:12.2.0
