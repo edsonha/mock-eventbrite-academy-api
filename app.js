@@ -7,9 +7,11 @@ const mongoose = require("mongoose");
 const UserModel = mongoose.model("user");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const upcomingEventsRouter = require("./src/routes/upcoming-events.route");
 
 app.use(morgan("combined"));
 app.use(express.json());
+app.use("/upcomingevents", upcomingEventsRouter);
 
 app.get("/", (req, res) => res.json("Hello World"));
 
