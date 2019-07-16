@@ -1,6 +1,6 @@
 const { MongoClient } = require("mongodb");
 const request = require("supertest");
-const app = require("../../app");
+const app = require("../../src/app");
 const mongoose = require("mongoose");
 const userData = require("../../data/user.data");
 require("../../db");
