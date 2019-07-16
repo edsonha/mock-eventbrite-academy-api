@@ -1,6 +1,7 @@
 const app = require("../../app");
 const request = require("supertest");
 const mockEventsWithSeats = require("../../data/mockEventsWithSeats.mockdata");
+const moment = require("moment");
 
 describe("getUpComingEvents route", () => {
   it("should return 200 on success", async () => {
@@ -8,8 +9,18 @@ describe("getUpComingEvents route", () => {
     expect(response.status).toBe(200);
   });
 
-  xit("GET / should return all the upcoming events", async () => {
+  it("GET / should return all the upcoming events", async () => {
     const response = await request(app).get("/upcomingevents");
     expect(response.body).toMatchObject(mockEventsWithSeats);
+  });
+
+  it("GET / should return events in chronological order", async () => {
+    const response = await request(app).get("/upcomingevents");
+    const getDates = response.body.map(event =>
+      moment.utc(event.time).toDate()
+    );
+    expect(getDates[1] - getDates[0]).toBeGreaterThanOrEqual(0);
+    expect(getDates[2] - getDates[1]).toBeGreaterThanOrEqual(0);
+    expect(getDates[3] - getDates[2]).toBeGreaterThanOrEqual(0);
   });
 });
