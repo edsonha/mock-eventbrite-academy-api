@@ -6,6 +6,8 @@ const dbURI =
   "mongodb://localhost:27017/stashaway";
 
 mongoose.connect(dbURI, {
+  useNewUrlParser: true,
+  useFindAndModify: false,
   useNewUrlParser: true
 });
 

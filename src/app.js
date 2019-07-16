@@ -1,4 +1,4 @@
-require("./db");
+require("./utils/db");
 const express = require("express");
 const morgan = require("morgan");
 const app = express();
@@ -7,7 +7,7 @@ const mongoose = require("mongoose");
 const UserModel = mongoose.model("user");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const upcomingEventsRouter = require("./src/routes/upcoming-events.route");
+const upcomingEventsRouter = require("./routes/upcoming-events.route");
 
 app.use(morgan("combined"));
 app.use(express.json());
