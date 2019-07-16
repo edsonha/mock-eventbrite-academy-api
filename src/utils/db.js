@@ -1,20 +1,18 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
-const dbURI =
-  process.env.MONGODB_URI ||
-  global.__MONGO_URI__ ||
-  "mongodb://localhost:27017/stashaway";
+/* istanbul ignore next */
+const dbURI = process.env.MONGODB_URI;
 
 mongoose.connect(dbURI, {
   useNewUrlParser: true,
   useFindAndModify: false,
-  useNewUrlParser: true
+  useNewUrlParser: true,
 });
 
 const db = mongoose.connection;
 
-db.on("error", console.error.bind(console, "connection error:"));
+db.on('error', console.error.bind(console, 'connection error:'));
 
-db.once("open", () => {
-  console.log("MongoDB connected");
+db.once('open', () => {
+  console.log('MongoDB connected');
 });
