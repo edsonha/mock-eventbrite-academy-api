@@ -2,7 +2,7 @@ const express = require("express");
 const upcomingEventsRouter = express.Router();
 const mockData = require("../../data/mockEventsWithSeats.mockdata");
 const moment = require("moment");
-const UpcomingEvents = require("../models/events.model");
+const UpcomingEvents = require("../models/event.model");
 
 upcomingEventsRouter.get("/", (req, res, next) => {
   mockData.sort((a, b) => {

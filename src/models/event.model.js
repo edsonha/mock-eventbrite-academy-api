@@ -14,4 +14,4 @@ const eventSchema = new mongoose.Schema({
   }
 });
 
-mongoose.model("events", eventSchema);
+mongoose.model("Event", eventSchema);
