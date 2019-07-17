@@ -22,11 +22,11 @@
   "description": "Backend POC for Stashaway academy",
   "main": "server.js",
   "scripts": {
-    "test": "jest",
-    "test:watch": "jest --watchAll",
+    "test": "jest --runInBand",
+    "test:watch": "jest --runInBand --watchAll ",
     "start": "node src/server.js",
     "start:dev": "nodemon src/server.js",
-    "coverage": "jest --coverage"
+    "coverage": "jest --runInBand --coverage"
   },
   "repository": {
     "type": "git",

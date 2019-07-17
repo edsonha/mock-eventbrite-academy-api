@@ -40,17 +40,17 @@ app.post("/login", async (req, res, next) => {
     const { email, password } = req.body;
     const foundUser = await UserModel.findOne({ email });
     if (!foundUser) {
-      return res.status(401).json("User does not exist");
+      return res.status(401).json({ message: "Wrong credentials" });
     }
 
     const isUser = await bcrypt.compare(password, foundUser.password);
 
     if (isUser) {
       res.status(200).json({
-        email: foundUser.email
+        name: foundUser.name
       });
     } else {
-      res.status(401).json("Wrong credentials");
+      res.status(401).json({ message: "Wrong credentials" });
     }
   } catch (err) {
     next(err);

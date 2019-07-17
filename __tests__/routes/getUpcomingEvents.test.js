@@ -3,6 +3,7 @@ const request = require("supertest");
 const { MongoClient } = require("mongodb");
 const mockEventsWithSeats = require("../../data/mockEventsWithSeats.data");
 const moment = require("moment");
+const mongoose = require("mongoose");
 
 describe("getUpComingEvents route", () => {
   let connection;

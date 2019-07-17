@@ -13,6 +13,7 @@ upcomingEventsRouter.get("/", async (req, res, next) => {
     });
     res.status(200).json(foundEvents);
   } catch (err) {
+    /* istanbul ignore next */
     next(err);
   }
 });

@@ -3,7 +3,6 @@ const request = require("supertest");
 const app = require("../../src/app");
 const mongoose = require("mongoose");
 const userData = require("../../data/user.data");
-require("../../src/utils/db");
 
 describe("login route", () => {
   let connection;
@@ -38,7 +37,7 @@ describe("login route", () => {
         .send({ email: "john@gmail.com", password: "abcdefgh" });
 
       expect(response.status).toBe(200);
-      expect(response.body.email).toBe("john@gmail.com");
+      expect(response.body.name).toBe("John");
     });
 
     it("should not be able to login if email cannot be found", async () => {
@@ -51,7 +50,7 @@ describe("login route", () => {
         });
 
       expect(response.status).toBe(401);
-      expect(response.body).toBe("User does not exist");
+      expect(response.body.message).toBe("Wrong credentials");
     });
 
     it("should not be able to login if wrong password is given", async () => {
@@ -64,7 +63,7 @@ describe("login route", () => {
         });
 
       expect(response.status).toBe(401);
-      expect(response.body).toBe("Wrong credentials");
+      expect(response.body.message).toBe("Wrong credentials");
     });
 
     it("GET /login should be able to throw an internal server error", async () => {

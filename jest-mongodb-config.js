@@ -1,12 +1,12 @@
 module.exports = {
-    mongodbMemoryServerOptions: {
-        instance: {
-            dbName: 'stashaway'
-        },
-        binary: {
-            version: '3.6.10',
-            skipMD5: true
-        },
-        autoStart: false
-    }
+  mongodbMemoryServerOptions: {
+    instance: {
+      dbName: "stashaway"
+    },
+    binary: {
+      version: "4.0.3",
+      skipMD5: true
+    },
+    autoStart: false
+  }
 };
