@@ -15,7 +15,7 @@ app.use(
     origin: function(origin, callback) {
       const allowedOrigins = [
         "http://localhost:3000",
-        "https://stashaway-ui.herokuapp.com/"
+        "https://stashaway-ui.herokuapp.com"
       ];
       /* istanbul ignore next */
       if (!origin) return callback(null, true);
