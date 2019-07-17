@@ -1,15 +1,17 @@
 const express = require("express");
+const mongoose = require("mongoose");
 const upcomingEventsRouter = express.Router();
-const mockData = require("../../data/mockEventsWithSeats.mockdata");
 const moment = require("moment");
-const UpcomingEvents = require("../models/event.model");
+require("../models/event.model");
+const EventModel = mongoose.model("Event");
 
-upcomingEventsRouter.get("/", (req, res, next) => {
+upcomingEventsRouter.get("/", async (req, res, next) => {
   try {
-    mockData.sort((a, b) => {
+    const foundEvents = await EventModel.find();
+    foundEvents.sort((a, b) => {
       return moment(a.time) - moment(b.time);
     });
-    res.status(200).json(mockData);
+    res.status(200).json(foundEvents);
   } catch (err) {
     next(err);
   }
