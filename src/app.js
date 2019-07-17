@@ -13,14 +13,14 @@ const cors = require("cors");
 app.use(
   cors({
     origin: function(origin, callback) {
-      // allow requests with no origin
       const allowedOrigins = [
         "http://localhost:3000",
         "https://stashaway-ui.herokuapp.com/"
       ];
-      // (like mobile apps or curl requests)
+      /* istanbul ignore next */
       if (!origin) return callback(null, true);
-      if (allowedOrigins.indexOf(origin) === -1) {
+      /* istanbul ignore next */
+      if (allowedOrigins.indexOf(origin) !== -1) {
         return callback(new Error("Not allowed by CORS"), false);
       } else return callback(null, true);
     }
@@ -33,27 +33,35 @@ app.use("/upcomingevents", upcomingEventsRouter);
 
 app.get("/", (req, res) => res.json("Hello World"));
 
-app.post("/login", async (req, res) => {
-  const { email, password } = req.body;
-  const foundUser = await UserModel.findOne({ email });
+app.post("/login", async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+    const foundUser = await UserModel.findOne({ email });
+    if (!foundUser) {
+      return res.status(401).json("User does not exist");
+    }
 
-  if (!foundUser) {
-    return res.status(401).json("User does not exist");
-  }
+    const isUser = await bcrypt.compare(password, foundUser.password);
 
-  const isUser = await bcrypt.compare(password, foundUser.password);
-
-  if (isUser) {
-    res.status(200).json({
-      email: foundUser.email
-    });
-  } else {
-    res.status(401).json("Wrong credentials");
+    if (isUser) {
+      res.status(200).json({
+        email: foundUser.email
+      });
+    } else {
+      res.status(401).json("Wrong credentials");
+    }
+  } catch (err) {
+    next(err);
   }
 });
 
 app.use((err, req, res, next) => {
-  console.log("error", err);
+  // if (!err.statusCode) {
+  //   res.status(500).json({ err: "Internal server error" });
+  // } else {
+  //   res.status(err.statusCode).json({ err: err.message });
+  // }
+  // console.log("error", err);
   res.sendStatus(500);
 });
 

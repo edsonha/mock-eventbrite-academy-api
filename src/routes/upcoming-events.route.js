@@ -5,10 +5,14 @@ const moment = require("moment");
 const UpcomingEvents = require("../models/event.model");
 
 upcomingEventsRouter.get("/", (req, res, next) => {
-  mockData.sort((a, b) => {
-    return moment(a.time) - moment(b.time);
-  });
-  res.status(200).json(mockData);
+  try {
+    mockData.sort((a, b) => {
+      return moment(a.time) - moment(b.time);
+    });
+    res.status(200).json(mockData);
+  } catch (err) {
+    next(err);
+  }
 });
 
 module.exports = upcomingEventsRouter;

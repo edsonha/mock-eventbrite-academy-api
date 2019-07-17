@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const userData = require("../../data/user.data");
 require("../../src/utils/db");
 
-describe("app", () => {
+describe("login route", () => {
   let connection;
   let db;
 
@@ -28,11 +28,6 @@ describe("app", () => {
     await db.dropDatabase();
     const usersCollection = await db.collection("users");
     await usersCollection.insertMany(userData);
-  });
-
-  it("should create a hello world app", async () => {
-    const response = await request(app).get("/");
-    expect(response.body).toBe("Hello World");
   });
 
   describe("login", () => {
@@ -70,6 +65,16 @@ describe("app", () => {
 
       expect(response.status).toBe(401);
       expect(response.body).toBe("Wrong credentials");
+    });
+
+    it("GET /login should be able to throw an internal server error", async () => {
+      const response = await request(app)
+        .post("/login")
+        .set("Content-Type", "application/json")
+        .send({
+          email: { dummy: "dummy" }
+        });
+      expect(response.status).toBe(500);
     });
   });
 });
