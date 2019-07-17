@@ -1,7 +1,7 @@
 const app = require("../../src/app");
 const request = require("supertest");
 const { MongoClient } = require("mongodb");
-const mockEventsWithSeats = require("../../data/mockEventsWithSeats.mockdata");
+const mockEventsWithSeats = require("../../data/mockEventsWithSeats.data");
 const moment = require("moment");
 
 describe("getUpComingEvents route", () => {
