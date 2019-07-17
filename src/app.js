@@ -20,9 +20,11 @@ app.use(
       /* istanbul ignore next */
       if (!origin) return callback(null, true);
       /* istanbul ignore next */
-      if (allowedOrigins.indexOf(origin) !== -1) {
+      if (allowedOrigins.indexOf(origin) === -1) {
         return callback(new Error("Not allowed by CORS"), false);
-      } else return callback(null, true);
+      } else {
+        return callback(null, true);
+      }
     }
   })
 );
