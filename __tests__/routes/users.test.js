@@ -29,7 +29,7 @@ describe("user route", () => {
     await usersCollection.insertMany(userData);
   });
   describe("login", () => {
-    it("should be able to login if correct email and password is given ", async () => {
+    it("POST / should be able to login if correct email and password is given ", async () => {
       const response = await request(app)
         .post("/users/login")
         .set("Content-Type", "application/json")
@@ -38,7 +38,7 @@ describe("user route", () => {
       expect(response.body.name).toBe("John");
     });
 
-    it("should not be able to login if email cannot be found", async () => {
+    it("POST / should not be able to login if email cannot be found", async () => {
       const response = await request(app)
         .post("/users/login")
         .set("Content-Type", "application/json")
@@ -51,7 +51,7 @@ describe("user route", () => {
       expect(response.body.message).toBe("Wrong credentials");
     });
 
-    it("should not be able to login if wrong password is given", async () => {
+    it("POST / should not be able to login if wrong password is given", async () => {
       const response = await request(app)
         .post("/users/login")
         .set("Content-Type", "application/json")
@@ -76,7 +76,7 @@ describe("user route", () => {
   });
 
   describe("registration", () => {
-    it("should send back user name if registration succeeds", async () => {
+    it("POST / should send back user name if registration succeeds", async () => {
       const newUser = {
         name: "Sally",
         email: "sally@hotmail.com",
@@ -94,7 +94,7 @@ describe("user route", () => {
       expect(response.status).toBe(201);
     });
 
-    it("should deny registration if email is already registered", async () => {
+    it("POST / should deny registration if email is already registered", async () => {
       const oldUser = {
         name: "John",
         email: "john@gmail.com",
@@ -110,7 +110,7 @@ describe("user route", () => {
       expect(response.status).toBe(400);
     });
 
-    it("should deny registration if email format is invalid: missing '@'", async () => {
+    it("POST / should deny registration if email format is invalid: missing '@'", async () => {
       const newUser = {
         name: "Sally",
         email: "sallyhotmail.com",
@@ -126,7 +126,7 @@ describe("user route", () => {
       expect(response.status).toBe(400);
       expect(response.body.message).toBe("Cannot create account");
     });
-    it("should deny registration if email format is invalid: missing '.com'", async () => {
+    it("POST / should deny registration if email format is invalid: missing '.com'", async () => {
       const newUser = {
         name: "Sally",
         email: "sally@hotmail",
@@ -143,7 +143,7 @@ describe("user route", () => {
       expect(response.body.message).toBe("Cannot create account");
     });
 
-    it("should deny registration if email format is invalid: root contains less than 2 letters", async () => {
+    it("POST / should deny registration if email format is invalid: root contains less than 2 letters", async () => {
       const newUser = {
         name: "Sally",
         email: "sally@hotmail.c",
@@ -160,7 +160,7 @@ describe("user route", () => {
       expect(response.body.message).toBe("Cannot create account");
     });
 
-    it("should deny registration if email format is invalid: special characters present", async () => {
+    it("POST / should deny registration if email format is invalid: special characters present", async () => {
       const newUser = {
         name: "Sally",
         email: "sally@hot#$%mail.com",
@@ -177,7 +177,7 @@ describe("user route", () => {
       expect(response.body.message).toBe("Cannot create account");
     });
 
-    it("should deny registration if password format is invalid: lack of special character", async () => {
+    it("POST / should deny registration if password format is invalid: lack of special character", async () => {
       const newUser = {
         name: "Sally",
         email: "sally@hotmail.com",
@@ -194,7 +194,7 @@ describe("user route", () => {
       expect(response.body.message).toBe("Cannot create account");
     });
 
-    it("should deny registration if password format is invalid: lack of alphabets", async () => {
+    it("POST / should deny registration if password format is invalid: lack of alphabets", async () => {
       const newUser = {
         name: "Sally",
         email: "sally@hotmail.com",
@@ -211,7 +211,7 @@ describe("user route", () => {
       expect(response.body.message).toBe("Cannot create account");
     });
 
-    it("should deny registration if password format is invalid: lack of numerals", async () => {
+    it("POST / should deny registration if password format is invalid: lack of numerals", async () => {
       const newUser = {
         name: "Sally",
         email: "sally@hotmail.com",
@@ -228,7 +228,7 @@ describe("user route", () => {
       expect(response.body.message).toBe("Cannot create account");
     });
 
-    it("should deny registration if password and confirm password don't match", async () => {
+    it("POST / should deny registration if password and confirm password don't match", async () => {
       const newUser = {
         name: "Sally",
         email: "sally@hotmail.com",
@@ -245,7 +245,7 @@ describe("user route", () => {
       expect(response.body.message).toBe("Cannot create account");
     });
 
-    it("should deny registration if name contains special characters", async () => {
+    it("POST / should deny registration if name contains special characters", async () => {
       const newUser = {
         name: "Sally@#",
         email: "sally@hotmail.com",
@@ -261,7 +261,7 @@ describe("user route", () => {
       expect(response.status).toBe(400);
       expect(response.body.message).toBe("Cannot create account");
     });
-    it("should deny registration if name contains less than 2 characters", async () => {
+    it("POST / should deny registration if name contains less than 2 characters", async () => {
       const newUser = {
         name: "S",
         email: "sally@hotmail.com",
@@ -277,7 +277,7 @@ describe("user route", () => {
       expect(response.status).toBe(400);
       expect(response.body.message).toBe("Cannot create account");
     });
-    it("should deny registration if name contains more than 20 characters", async () => {
+    it("POST / should deny registration if name contains more than 20 characters", async () => {
       const newUser = {
         name: "MyNameIsSoLongItContainsSoManyCharacters",
         email: "sally@hotmail.com",
