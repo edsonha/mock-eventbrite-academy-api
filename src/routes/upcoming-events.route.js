@@ -28,12 +28,11 @@ upcomingEventsRouter.get("/:id", async (req, res, next) => {
       return res.status(404).send({ message: "The event does not exist" });
     }
   } catch (err) {
-    /* istanbul ignore next */
     if (err.name === "CastError") {
       return res.status(404).send({ message: "Event ID not valid" });
+    } else {
+      next(err);
     }
-    /* istanbul ignore next */
-    next(err);
   }
 });
 

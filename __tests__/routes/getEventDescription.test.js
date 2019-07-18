@@ -3,6 +3,8 @@ const request = require("supertest");
 const app = require("../../src/app");
 const mongoose = require("mongoose");
 const mockEventsWithSeats = require("../../data/mockEventsWithSeats.data");
+require("../../src/models/event.model");
+const EventModel = mongoose.model("Event");
 
 describe("getEventDescription route", () => {
   let connection;
@@ -66,5 +68,13 @@ describe("getEventDescription route", () => {
 
     expect(response.status).toBe(404);
     expect(response.body.message).toBe("Event ID not valid");
+  });
+
+  it("GET /upcomingevents/:id should return 500 error for other errors", async () => {
+    const mockingoose = require("mockingoose").default;
+    mockingoose(EventModel).toReturn(new Error("my test"), "findOne");
+
+    const response = await request(app).get("/upcomingevents/randomID");
+    expect(response.status).toBe(500);
   });
 });
