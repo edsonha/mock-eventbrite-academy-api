@@ -49,9 +49,14 @@ describe("getUpComingEvents route", () => {
   it("GET / should return all the upcoming events", async () => {
     insertMockEventsToTestDB();
     const response = await request(app).get("/upcomingevents");
-    const chronologicalMockEvents = mockEventsWithSeats.sort((a, b) => {
-      return moment(a.time) - moment(b.time);
-    });
+    const chronologicalMockEvents = mockEventsWithSeats
+      .sort((a, b) => {
+        return moment(a.time) - moment(b.time);
+      })
+      .map(event => {
+        event._id = String(event._id);
+        return event;
+      });
     expect(response.body).toMatchObject(chronologicalMockEvents);
   });
 

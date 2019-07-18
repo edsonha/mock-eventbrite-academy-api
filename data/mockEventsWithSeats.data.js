@@ -1,5 +1,8 @@
+const mongoose = require("mongoose");
+
 const mockEventsWithSeats = [
   {
+    _id: mongoose.Types.ObjectId("5d2e798c8c4c740d685e1d3f"),
     title: "Event 1",
     description: "Lorum Ipsum 1.",
     speaker: "Speaker 1",
@@ -10,6 +13,7 @@ const mockEventsWithSeats = [
     image: "https://via.placeholder.com/150.png?text=_"
   },
   {
+    _id: mongoose.Types.ObjectId("5d2e7e1aec0f970d68a71465"),
     title: "Event 2",
     description: "Lorum Ipsum 2.",
     speaker: "Speaker 2",
@@ -20,6 +24,7 @@ const mockEventsWithSeats = [
     image: "https://via.placeholder.com/150.png?text=_"
   },
   {
+    _id: mongoose.Types.ObjectId("5d2e7e4bec0f970d68a71466"),
     title: "Event 3",
     description: "Lorum Ipsum 3.",
     speaker: "Speaker 3",
@@ -30,6 +35,7 @@ const mockEventsWithSeats = [
     image: "https://via.placeholder.com/150.png?text=_"
   },
   {
+    _id: mongoose.Types.ObjectId("5d2e7dd7ec0f970d68a71464"),
     title: "Event 4",
     description: "Lorum Ipsum 4.",
     speaker: "Speaker 4",
