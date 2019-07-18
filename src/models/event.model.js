@@ -11,9 +11,8 @@ const eventSchema = new mongoose.Schema({
   availableSeats: { type: Number, required: true },
   image: {
     type: String,
-    required: true,
-    default: "https://via.placeholder.com/150.png?text=_"
-  }
+    required: false,
+  },
 });
 
 mongoose.model("Event", eventSchema);
