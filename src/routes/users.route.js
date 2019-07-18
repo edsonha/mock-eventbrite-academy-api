@@ -1,0 +1,72 @@
+const express = require("express");
+const mongoose = require("mongoose");
+const usersRouter = express.Router();
+require("../models/user.model");
+const UserModel = mongoose.model("user");
+const Joi = require("@hapi/joi");
+const bcrypt = require("bcryptjs");
+
+validateRegistration = user => {
+  const schema = {
+    name: Joi.string()
+      .required()
+      .regex(/^[a-zA-Z]+(?: [a-zA-Z]+)*$/)
+      .min(2)
+      .max(20),
+    email: Joi.string()
+      .email({ minDomainSegments: 2 })
+      .required(),
+    password: Joi.string()
+      .required()
+      .regex(
+        /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d!@#$%^&*()_+]{8,30}$/
+      ),
+    // .min(8)
+    // .max(30)
+    passwordConfirmation: Joi.string()
+  };
+  return Joi.validate(user, schema);
+};
+
+usersRouter.post("/register", async (req, res, next) => {
+  const { name, email, password, passwordConfirmation } = req.body;
+
+  const validation = validateRegistration(req.body);
+  if (validation.error) {
+    return res.status(400).json({ message: "Cannot create account" });
+  }
+
+  if (password !== passwordConfirmation) {
+    return res.status(400).json({ message: "Cannot create account" });
+  }
+  const foundUser = await UserModel.findOne({ email });
+  if (foundUser) {
+    res.status(400).json({ message: "User already exists" });
+  } else {
+    res.status(201).json({ message: "Account created!", userName: name });
+  }
+});
+
+usersRouter.post("/login", async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+    const foundUser = await UserModel.findOne({ email });
+    if (!foundUser) {
+      return res.status(401).json({ message: "Wrong credentials" });
+    }
+
+    const isUser = await bcrypt.compare(password, foundUser.password);
+
+    if (isUser) {
+      res.status(200).json({
+        name: foundUser.name
+      });
+    } else {
+      res.status(401).json({ message: "Wrong credentials" });
+    }
+  } catch (err) {
+    next(err);
+  }
+});
+
+module.exports = usersRouter;

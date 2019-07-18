@@ -3,11 +3,10 @@ const express = require("express");
 const morgan = require("morgan");
 const app = express();
 require("./models/user.model");
-const mongoose = require("mongoose");
-const UserModel = mongoose.model("user");
-const bcrypt = require("bcryptjs");
+
 const jwt = require("jsonwebtoken");
 const upcomingEventsRouter = require("./routes/upcoming-events.route");
+const usersRouter = require("./routes/users.route");
 const cors = require("cors");
 
 app.use(
@@ -31,31 +30,10 @@ app.use(
 
 app.use(morgan("combined"));
 app.use(express.json());
+app.use("/users", usersRouter);
 app.use("/upcomingevents", upcomingEventsRouter);
 
 app.get("/", (req, res) => res.json("Hello World"));
-
-app.post("/login", async (req, res, next) => {
-  try {
-    const { email, password } = req.body;
-    const foundUser = await UserModel.findOne({ email });
-    if (!foundUser) {
-      return res.status(401).json({ message: "Wrong credentials" });
-    }
-
-    const isUser = await bcrypt.compare(password, foundUser.password);
-
-    if (isUser) {
-      res.status(200).json({
-        name: foundUser.name
-      });
-    } else {
-      res.status(401).json({ message: "Wrong credentials" });
-    }
-  } catch (err) {
-    next(err);
-  }
-});
 
 app.use((err, req, res, next) => {
   // if (!err.statusCode) {
