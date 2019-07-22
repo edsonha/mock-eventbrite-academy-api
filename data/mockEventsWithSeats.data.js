@@ -10,7 +10,8 @@ const mockEventsWithSeats = [
     duration: 120,
     location: "Location 1",
     availableSeats: 100,
-    image: "https://via.placeholder.com/150.png?text=_"
+    image: "https://via.placeholder.com/150.png?text=_",
+    attendees: []
   },
   {
     _id: mongoose.Types.ObjectId("5d2e7e1aec0f970d68a71465"),
@@ -21,7 +22,8 @@ const mockEventsWithSeats = [
     duration: 120,
     location: "Location 2",
     availableSeats: 0,
-    image: "https://via.placeholder.com/150.png?text=_"
+    image: "https://via.placeholder.com/150.png?text=_",
+    attendees: []
   },
   {
     _id: mongoose.Types.ObjectId("5d2e7e4bec0f970d68a71466"),
@@ -32,7 +34,8 @@ const mockEventsWithSeats = [
     duration: 90,
     location: "Location 3",
     availableSeats: 100,
-    image: "https://via.placeholder.com/150.png?text=_"
+    image: "https://via.placeholder.com/150.png?text=_",
+    attendees: []
   },
   {
     _id: mongoose.Types.ObjectId("5d2e7dd7ec0f970d68a71464"),
@@ -43,7 +46,8 @@ const mockEventsWithSeats = [
     duration: 90,
     location: "Location 4",
     availableSeats: 0,
-    image: "https://via.placeholder.com/150.png?text=_"
+    image: "https://via.placeholder.com/150.png?text=_",
+    attendees: []
   }
 ];
 

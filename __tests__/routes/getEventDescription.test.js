@@ -49,6 +49,7 @@ describe("getEventDescription route", () => {
     );
     const expectedResponse = mockEventsWithSeats[1];
     expectedResponse._id = String(expectedResponse._id);
+    delete expectedResponse.attendees;
 
     expect(response.status).toBe(200);
     expect(response.body).toMatchObject(expectedResponse);

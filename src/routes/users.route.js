@@ -69,7 +69,8 @@ usersRouter.post("/login", async (req, res, next) => {
 
     if (isUser) {
       res.status(200).json({
-        name: foundUser.name
+        name: foundUser.name,
+        registeredEvents: foundUser.registeredEvents
       });
     } else {
       res.status(401).json({ message: "Wrong credentials" });

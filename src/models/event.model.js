@@ -11,8 +11,9 @@ const eventSchema = new mongoose.Schema({
   availableSeats: { type: Number, required: true },
   image: {
     type: String,
-    required: false,
+    required: false
   },
+  attendees: [{ type: String }]
 });
 
 mongoose.model("Event", eventSchema);
