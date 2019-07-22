@@ -3,6 +3,8 @@ const request = require("supertest");
 const app = require("../../src/app");
 const mongoose = require("mongoose");
 const userData = require("../../data/user.data");
+require("../../src/models/user.model");
+const UserModel = mongoose.model("user");
 
 describe("user route", () => {
   let connection;
@@ -28,6 +30,7 @@ describe("user route", () => {
     const usersCollection = await db.collection("users");
     await usersCollection.insertMany(userData);
   });
+
   describe("login", () => {
     it("POST / should be able to login if correct email and password is given ", async () => {
       const response = await request(app)
@@ -64,7 +67,7 @@ describe("user route", () => {
       expect(response.body.message).toBe("Wrong credentials");
     });
 
-    it("GET /users/login should be able to throw an internal server error", async () => {
+    it("POST /users/login should be able to throw an internal server error", async () => {
       const response = await request(app)
         .post("/users/login")
         .set("Content-Type", "application/json")
@@ -76,24 +79,6 @@ describe("user route", () => {
   });
 
   describe("registration", () => {
-    it("POST / should send back user name if registration succeeds", async () => {
-      const newUser = {
-        name: "Sally",
-        email: "sally@hotmail.com",
-        password: "password123!@#",
-        passwordConfirmation: "password123!@#"
-      };
-
-      const response = await request(app)
-        .post("/users/register")
-        .set("Content-Type", "application/json")
-        .send(newUser);
-
-      expect(response.body.message).toBe("Account created!");
-      expect(response.body.userName).toBe("Sally");
-      expect(response.status).toBe(201);
-    });
-
     it("POST / should deny registration if email is already registered", async () => {
       const oldUser = {
         name: "John",
@@ -126,6 +111,7 @@ describe("user route", () => {
       expect(response.status).toBe(400);
       expect(response.body.message).toBe("Cannot create account");
     });
+
     it("POST / should deny registration if email format is invalid: missing '.com'", async () => {
       const newUser = {
         name: "Sally",
@@ -261,6 +247,7 @@ describe("user route", () => {
       expect(response.status).toBe(400);
       expect(response.body.message).toBe("Cannot create account");
     });
+
     it("POST / should deny registration if name contains less than 2 characters", async () => {
       const newUser = {
         name: "S",
@@ -277,6 +264,7 @@ describe("user route", () => {
       expect(response.status).toBe(400);
       expect(response.body.message).toBe("Cannot create account");
     });
+
     it("POST / should deny registration if name contains more than 20 characters", async () => {
       const newUser = {
         name: "MyNameIsSoLongItContainsSoManyCharacters",
@@ -292,6 +280,87 @@ describe("user route", () => {
 
       expect(response.status).toBe(400);
       expect(response.body.message).toBe("Cannot create account");
+    });
+
+    it("POST / should accept registration and return name if all validations pass", async () => {
+      const newUser = {
+        name: "Sally",
+        email: "sally@hotmail.com",
+        password: "password123!@#",
+        passwordConfirmation: "password123!@#"
+      };
+
+      const response = await request(app)
+        .post("/users/register")
+        .set("Content-Type", "application/json")
+        .send(newUser);
+
+      expect(response.body.message).toBe("Account created!");
+      expect(response.body.name).toBe("Sally");
+      expect(response.status).toBe(201);
+    });
+
+    it("POST / should store user in DB after input validation pass", async () => {
+      const newUser = {
+        name: "Sally",
+        email: "sally@hotmail.com",
+        password: "password123!@#",
+        passwordConfirmation: "password123!@#"
+      };
+
+      const response = await request(app)
+        .post("/users/register")
+        .set("Content-Type", "application/json")
+        .send(newUser);
+
+      const usersCollection = await db.collection("users");
+      const insertedUser = await usersCollection.findOne({
+        email: newUser.email
+      });
+      expect(response.body.name).toBe(insertedUser.name);
+    });
+
+    it("POST / should store user with bcrypt password in DB after input validation pass and then, the user can log in", async () => {
+      const newUser = {
+        name: "Sally",
+        email: "sally@hotmail.com",
+        password: "password123!@#",
+        passwordConfirmation: "password123!@#"
+      };
+
+      const signupResponse = await request(app)
+        .post("/users/register")
+        .set("Content-Type", "application/json")
+        .send(newUser);
+
+      const loginResponse = await request(app)
+        .post("/users/login")
+        .set("Content-Type", "application/json")
+        .send({ email: "sally@hotmail.com", password: "password123!@#" });
+
+      expect(signupResponse.body.name).toBe(loginResponse.body.name);
+    });
+
+    it("POST / should deny registration if there is an internal server error", async () => {
+      const mockingoose = require("mockingoose").default;
+      mockingoose(UserModel).toReturn(new Error("my test"), "findOne");
+
+      const newUser = {
+        name: "Sally",
+        email: "sally@hotmail.com",
+        password: "password123!@#",
+        passwordConfirmation: "password123!@#"
+      };
+
+      const response = await request(app)
+        .post("/users/register")
+        .set("Content-Type", "application/json")
+        .send(newUser);
+
+      expect(response.status).toBe(500);
+      expect(response.body.message).toBe(
+        "Something went wrong, please try again"
+      );
     });
   });
 });

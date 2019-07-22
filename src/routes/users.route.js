@@ -29,21 +29,30 @@ validateRegistration = user => {
 };
 
 usersRouter.post("/register", async (req, res, next) => {
-  const { name, email, password, passwordConfirmation } = req.body;
+  try {
+    const { name, email, password, passwordConfirmation } = req.body;
 
-  const validation = validateRegistration(req.body);
-  if (validation.error) {
-    return res.status(400).json({ message: "Cannot create account" });
-  }
+    const validation = validateRegistration(req.body);
+    if (validation.error) {
+      return res.status(400).json({ message: "Cannot create account" });
+    }
 
-  if (password !== passwordConfirmation) {
-    return res.status(400).json({ message: "Cannot create account" });
-  }
-  const foundUser = await UserModel.findOne({ email });
-  if (foundUser) {
-    res.status(400).json({ message: "User already exists" });
-  } else {
-    res.status(201).json({ message: "Account created!", userName: name });
+    if (password !== passwordConfirmation) {
+      return res.status(400).json({ message: "Cannot create account" });
+    }
+    const foundUser = await UserModel.findOne({ email });
+    if (foundUser) {
+      res.status(400).json({ message: "User already exists" });
+    } else {
+      const saltround = 10;
+      const digest = await bcrypt.hash(password, saltround);
+      const userWithDigest = { name, email, password: digest };
+
+      UserModel.create(userWithDigest);
+      res.status(201).json({ message: "Account created!", name: name });
+    }
+  } catch (err) {
+    next({ err, message: "Something went wrong, please try again" });
   }
 });
 
@@ -51,6 +60,7 @@ usersRouter.post("/login", async (req, res, next) => {
   try {
     const { email, password } = req.body;
     const foundUser = await UserModel.findOne({ email });
+
     if (!foundUser) {
       return res.status(401).json({ message: "Wrong credentials" });
     }

@@ -33,8 +33,6 @@ app.use(express.json());
 app.use("/users", usersRouter);
 app.use("/upcomingevents", upcomingEventsRouter);
 
-app.get("/", (req, res) => res.json("Hello World"));
-
 app.use((err, req, res, next) => {
   // if (!err.statusCode) {
   //   res.status(500).json({ err: "Internal server error" });
@@ -42,7 +40,7 @@ app.use((err, req, res, next) => {
   //   res.status(err.statusCode).json({ err: err.message });
   // }
   // console.log("error", err);
-  res.sendStatus(500);
+  res.status(500).json({ message: err.message });
 });
 
 module.exports = app;
