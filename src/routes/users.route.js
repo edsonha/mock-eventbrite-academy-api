@@ -57,9 +57,12 @@ usersRouter.post("/register", async (req, res, next) => {
       const saltround = 10;
       const digest = await bcrypt.hash(password, saltround);
       const userWithDigest = { name, email, password: digest };
+      await UserModel.create(userWithDigest);
+      const jwtToken = generateToken(userWithDigest);
 
-      UserModel.create(userWithDigest);
-      res.status(201).json({ message: "Account created!", name: name });
+      res
+        .status(201)
+        .json({ message: "Account created!", name: name, jwtToken: jwtToken });
     }
   } catch (err) {
     next({ err, message: "Something went wrong, please try again" });

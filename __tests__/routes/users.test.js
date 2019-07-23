@@ -344,7 +344,7 @@ describe("user route", () => {
       expect(response.status).toBe(201);
     });
 
-    it("POST / should store user in DB after input validation pass", async () => {
+    it("POST / should accept registration and store user in DB after input validation pass", async () => {
       const newUser = {
         name: "Sally",
         email: "sally@hotmail.com",
@@ -364,7 +364,7 @@ describe("user route", () => {
       expect(response.body.name).toBe(insertedUser.name);
     });
 
-    it("POST / should store user with bcrypt password in DB after input validation pass and then, the user can log in", async () => {
+    it("POST / should accept registration and store user with bcrypt password in DB after input validation pass and then, the user can log in", async () => {
       const newUser = {
         name: "Sally",
         email: "sally@hotmail.com",
@@ -385,7 +385,7 @@ describe("user route", () => {
       expect(signupResponse.body.name).toBe(loginResponse.body.name);
     });
 
-    it("POST / should deny registration if there is an internal server error", async () => {
+    xit("POST / should deny registration if there is an internal server error", async () => {
       const mockingoose = require("mockingoose").default;
       mockingoose(UserModel).toReturn(new Error("my test"), "findOne");
 
@@ -405,6 +405,26 @@ describe("user route", () => {
       expect(response.body.message).toBe(
         "Something went wrong, please try again"
       );
+      mockingoose(UserModel).reset("findOne");
+    });
+
+    it("GET /secure should reject access with valid JWT token and unmatched user", async () => {
+      const loginResponse = await request(app)
+        .post("/users/login")
+        .set("Content-Type", "application/json")
+        .send({ email: "john@gmail.com", password: "abcdefgh" });
+
+      const jwtToken = loginResponse.body.jwtToken;
+
+      const mockingoose = require("mockingoose").default;
+      mockingoose(UserModel).toReturn(null, "findOne");
+
+      const getResponse = await request(app)
+        .get("/users/secure")
+        .set("Authorization", "Bearer " + jwtToken);
+      expect(getResponse.status).toBe(401);
+      expect(getResponse.body.message).toBe("invalid signature");
+      mockingoose(UserModel).reset("findOne");
     });
   });
 });

@@ -15,8 +15,9 @@ const authenticateUser = async (req, res, next) => {
     if (foundUser) {
       req.user = foundUser;
       next();
+    } else {
+      throw new Error("invalid signature");
     }
-    throw "invalid signature";
   } catch (err) {
     if (err.message === "invalid signature") {
       return res.status(401).json({ message: err.message });
