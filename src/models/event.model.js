@@ -1,6 +1,12 @@
 const mongoose = require("mongoose");
 mongoose.set("useCreateIndex", true);
 
+const attendeeSchema = new mongoose.Schema({
+  _id: { type: String, required: true },
+  name: { type: String, required: true },
+  email: { type: String, required: true, unique: true }
+});
+
 const eventSchema = new mongoose.Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },
@@ -13,7 +19,7 @@ const eventSchema = new mongoose.Schema({
     type: String,
     required: false
   },
-  attendees: [{ type: String }]
+  attendees: [attendeeSchema]
 });
 
 mongoose.model("Event", eventSchema);

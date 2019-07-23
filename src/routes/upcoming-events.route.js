@@ -72,7 +72,11 @@ upcomingEventsRouter.put("/:id/user/:userId", async (req, res, next) => {
     const registeredEvent = req.event;
     const loggedInUser = await UserModel.findOne({ _id: userId });
     if (registeredEvent && loggedInUser) {
-      registeredEvent.attendees.push(userId);
+      registeredEvent.attendees.push({
+        _id: userId,
+        name: loggedInUser.name,
+        email: loggedInUser.email
+      });
       await registeredEvent.save();
       res.sendStatus(200);
     } else if (!loggedInUser) {

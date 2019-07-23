@@ -53,9 +53,11 @@ describe("getUpComingEvents route", () => {
 
     const EventCollection = await db.collection("events");
     const updatedEvent = await EventCollection.findOne({ title: "Event 1" });
-    expect(updatedEvent.attendees[updatedEvent.attendees.length - 1]).toBe(
-      "5d2e85951b62fc093cc3318b"
-    );
+    expect(updatedEvent.attendees[updatedEvent.attendees.length - 1]).toEqual({
+      _id: "5d2e85951b62fc093cc3318b",
+      name: "John",
+      email: "john@gmail.com"
+    });
   });
 
   it("PUT /:eventId/user/:userID should return error when event id not valid", async () => {
