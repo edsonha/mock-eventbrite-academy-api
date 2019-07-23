@@ -57,7 +57,6 @@ describe("getUpComingEvents route", () => {
       mockEventsWithSeatsClone.push(JSON.parse(JSON.stringify(event)));
     }
     const chronologicalMockEvents = mockEventsWithSeatsClone
-      // .slice(0)
       .sort((a, b) => {
         return moment(a.time) - moment(b.time);
       })
@@ -76,43 +75,5 @@ describe("getUpComingEvents route", () => {
     expect(getDates[1] - getDates[0]).toBeGreaterThanOrEqual(0);
     expect(getDates[2] - getDates[1]).toBeGreaterThanOrEqual(0);
     expect(getDates[3] - getDates[2]).toBeGreaterThanOrEqual(0);
-  });
-
-  it("PUT /:eventId/user/:userID should add user to the list of attendees", async () => {
-    const response = await request(app).put(
-      "/upcomingevents/5d2e798c8c4c740d685e1d3f/user/5d2e85951b62fc093cc3318b"
-    );
-
-    expect(response.status).toBe(200);
-
-    const EventCollection = await db.collection("events");
-    const updatedEvent = await EventCollection.findOne({ title: "Event 1" });
-    expect(updatedEvent.attendees[updatedEvent.attendees.length - 1]).toBe(
-      "5d2e85951b62fc093cc3318b"
-    );
-  });
-
-  it("PUT /:eventId/user/:userID should return error when event id not valid", async () => {
-    const response = await request(app).put(
-      "/upcomingevents/wrongID/user/5d2e85951b62fc093cc3318b"
-    );
-    expect(response.status).toBe(404);
-    expect(response.body.message).toBe("Event ID not valid");
-  });
-
-  it("PUT /:eventId/user/:userID should return error when event id does not exist", async () => {
-    const response = await request(app).put(
-      "/upcomingevents/5d2e7e1aec0f970d68a71499/user/5d2e85951b62fc093cc3318b"
-    );
-    expect(response.status).toBe(404);
-    expect(response.body.message).toBe("The event does not exist");
-  });
-
-  it("PUT /:eventId/user/:userID should return error when user id does not exist", async () => {
-    const response = await request(app).put(
-      "/upcomingevents/5d2e798c8c4c740d685e1d3f/user/5d2e85951b62fc093cc3319b"
-    );
-    expect(response.status).toBe(404);
-    expect(response.body.message).toBe("User does not exist");
   });
 });
