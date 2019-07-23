@@ -10,8 +10,10 @@ const attendeeSchema = new mongoose.Schema({
 const eventSchema = new mongoose.Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },
+  fullDescription: { type: String, required: true },
   time: { type: String, required: true },
   speaker: { type: String, required: true, default: "TBD" },
+  speakerBio: { type: String, required: true, default: "TBD" },
   duration: { type: Number, required: true },
   location: { type: String, required: true, default: "TBD" },
   availableSeats: { type: Number, required: true },
