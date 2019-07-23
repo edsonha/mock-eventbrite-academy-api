@@ -1,11 +1,10 @@
 const mongoose = require("mongoose");
 
-/* istanbul ignore next */
 const dbURI = process.env.MONGODB_URI;
 
 mongoose.connect(dbURI, {
   useNewUrlParser: true,
-  useFindAndModify: false
+  useFindAndModify: false,
 });
 
 const db = mongoose.connection;
