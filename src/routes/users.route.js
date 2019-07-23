@@ -5,6 +5,9 @@ require("../models/user.model");
 const UserModel = mongoose.model("user");
 const Joi = require("@hapi/joi");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const secretKey = require("../utils/key");
+const authenticateUser = require("../middleware/authenticate-user");
 
 validateRegistration = user => {
   const schema = {
@@ -27,6 +30,13 @@ validateRegistration = user => {
   };
   return Joi.validate(user, schema);
 };
+
+const generateToken = foundUser =>
+  jwt.sign(
+    { sub: foundUser.email, user: foundUser.name, iat: new Date().getTime() },
+    secretKey,
+    { expiresIn: "1h" }
+  );
 
 usersRouter.post("/register", async (req, res, next) => {
   try {
@@ -68,9 +78,11 @@ usersRouter.post("/login", async (req, res, next) => {
     const isUser = await bcrypt.compare(password, foundUser.password);
 
     if (isUser) {
+      const jwtToken = generateToken(foundUser);
       res.status(200).json({
         name: foundUser.name,
-        registeredEvents: foundUser.registeredEvents
+        registeredEvents: foundUser.registeredEvents,
+        jwtToken: jwtToken
       });
     } else {
       res.status(401).json({ message: "Wrong credentials" });
@@ -78,6 +90,10 @@ usersRouter.post("/login", async (req, res, next) => {
   } catch (err) {
     next(err);
   }
+});
+
+usersRouter.get("/secure", authenticateUser, (req, res, next) => {
+  res.status(200).json({ name: req.user.name, email: req.user.email });
 });
 
 module.exports = usersRouter;

@@ -77,6 +77,49 @@ describe("user route", () => {
         });
       expect(response.status).toBe(500);
     });
+
+    it("GET /secure should allow access with valid JWT token and matched user", async () => {
+      const loginResponse = await request(app)
+        .post("/users/login")
+        .set("Content-Type", "application/json")
+        .send({ email: "john@gmail.com", password: "abcdefgh" });
+
+      const jwtToken = loginResponse.body.jwtToken;
+
+      const getResponse = await request(app)
+        .get("/users/secure")
+        .set("Authorization", "Bearer " + jwtToken);
+      expect(getResponse.status).toBe(200);
+      expect(getResponse.body.name).toBe("John");
+      expect(getResponse.body.email).toBe("john@gmail.com");
+    });
+
+    it("GET /secure should reject access with no JWT token", async () => {
+      const loginResponse = await request(app)
+        .post("/users/login")
+        .set("Content-Type", "application/json")
+        .send({ email: "john@gmail.com", password: "abcdefgh" });
+
+      const getResponse = await request(app)
+        .get("/users/secure")
+        .set("Authorization", "");
+      expect(getResponse.status).toBe(401);
+    });
+
+    it("GET /secure should reject access with invalid JWT token", async () => {
+      const loginResponse = await request(app)
+        .post("/users/login")
+        .set("Content-Type", "application/json")
+        .send({ email: "john@gmail.com", password: "abcdefgh" });
+
+      const jwtToken =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzYWxseUBnbWFpbC5jb20iLCJuYW1lIjoiU2FsbHkiLCJpYXQiOjE1NjMwMDAwMDAsImV4cCI6MzEyNjEwMDAwMH0.Misen9HeXPyxSmO - iVMxNZcC - GnCPjCz0PEu13PCEA0";
+
+      const getResponse = await request(app)
+        .get("/users/secure")
+        .set("Authorization", "Bearer " + jwtToken);
+      expect(getResponse.status).toBe(401);
+    });
   });
 
   describe("registration", () => {
