@@ -7,8 +7,7 @@ const CourseModel = mongoose.model("Course");
 coursesRouter.get("/", async (req, res, next) => {
   try {
     const findCourses = await CourseModel.find();
-    res.status(200).json(
-      findCourses.map(course => {
+    const foundCourses = findCourses.map(course => {
         return {
           _id: course._id,
           title: course.title,
@@ -18,7 +17,7 @@ coursesRouter.get("/", async (req, res, next) => {
           level: course.level
         };
       })
-    );
+    res.status(200).json(foundCourses);
   } catch (err) {
     next(err);
   }
