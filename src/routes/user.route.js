@@ -8,7 +8,7 @@ const EventModel = mongoose.model("Event");
 const authenticateUser = require("../middleware/authenticate-user");
 
 userRouter.get(
-  "/:id/registeredevents",
+  "/registeredevents",
   authenticateUser,
   async (req, res, next) => {
     try {

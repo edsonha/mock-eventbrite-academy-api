@@ -37,26 +37,26 @@ describe("user route", () => {
     await eventsCollection.insertMany(mockEventsWithSeats);
   });
 
-  it("GET /:userid should return empty array if user is not registered for any events past or present", async () => {
+  it("GET /registeredevents should return empty array if user is not registered for any events past or present", async () => {
     const jwtToken = generateToken({
       email: "michael@gmail.com",
       name: "Michael"
     });
     const getResponse = await request(app)
-      .get("/user/5d2e85951b62fc093cc3319b/registeredevents")
+      .get("/user/registeredevents")
       .set("Authorization", "Bearer " + jwtToken);
 
     expect(getResponse.status).toBe(200);
     expect(getResponse.body).toEqual([]);
   });
 
-  it("GET /:userid should return array of events if user is registered for any events past or present", async () => {
+  it("GET /registeredevents should return array of events if user is registered for any events past or present", async () => {
     const jwtToken = generateToken({
       email: "john@gmail.com",
       name: "John"
     });
     const getResponse = await request(app)
-      .get("/user/5d2e85951b62fc093cc3319b/registeredevents")
+      .get("/user/registeredevents")
       .set("Authorization", "Bearer " + jwtToken);
 
     expect(getResponse.status).toBe(200);
