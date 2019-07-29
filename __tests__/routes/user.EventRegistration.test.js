@@ -78,7 +78,7 @@ describe("getUpComingEvents route", () => {
 
   it("PUT /:eventId/user/:userID should return error when user id does not exist", async () => {
     const response = await request(app).put(
-      "/upcomingevents/5d2e798c8c4c740d685e1d3f/user/5d2e85951b62fc093cc3319b"
+      "/upcomingevents/5d2e798c8c4c740d685e1d3f/user/5d2e85951b62fc093cc3311b"
     );
     expect(response.status).toBe(404);
     expect(response.body.message).toBe("User does not exist");
