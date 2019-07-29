@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const attendees = require("./user.data");
 
 const mockEventsWithSeats = [
   {
@@ -13,7 +14,7 @@ const mockEventsWithSeats = [
     location: "Location 1",
     availableSeats: 100,
     image: "https://via.placeholder.com/150.png?text=_",
-    attendees: []
+    attendees: [attendees[0]]
   },
   {
     _id: mongoose.Types.ObjectId("5d2e7e1aec0f970d68a71465"),
@@ -41,7 +42,7 @@ const mockEventsWithSeats = [
     location: "Location 3",
     availableSeats: 100,
     image: "https://via.placeholder.com/150.png?text=_",
-    attendees: []
+    attendees: [attendees[0]]
   },
   {
     _id: mongoose.Types.ObjectId("5d2e7dd7ec0f970d68a71464"),
@@ -55,7 +56,7 @@ const mockEventsWithSeats = [
     location: "Location 4",
     availableSeats: 0,
     image: "https://via.placeholder.com/150.png?text=_",
-    attendees: []
+    attendees: [attendees[0]]
   }
 ];
 

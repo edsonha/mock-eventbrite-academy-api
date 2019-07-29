@@ -6,7 +6,8 @@ require("./models/user.model");
 
 const jwt = require("jsonwebtoken");
 const upcomingEventsRouter = require("./routes/upcoming-events.route");
-const usersRouter = require("./routes/users.route");
+const { usersRouter } = require("./routes/users.route");
+const userRouter = require("./routes/user.route");
 const coursesRouter = require("./routes/courses.route");
 const cors = require("cors");
 
@@ -33,6 +34,7 @@ app.use(morgan("combined"));
 app.use(express.json());
 app.use("/courses", coursesRouter);
 app.use("/users", usersRouter);
+app.use("/user", userRouter);
 app.use("/upcomingevents", upcomingEventsRouter);
 
 app.use((err, req, res, next) => {

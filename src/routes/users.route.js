@@ -99,4 +99,4 @@ usersRouter.get("/secure", authenticateUser, (req, res, next) => {
   res.status(200).json({ name: req.user.name, email: req.user.email });
 });
 
-module.exports = usersRouter;
+module.exports = { usersRouter, generateToken };
