@@ -57,7 +57,6 @@ describe("getUpComingEvents route", () => {
       .set("Authorization", "Bearer " + jwtToken);
 
     expect(response.status).toBe(200);
-
     const EventCollection = await db.collection("events");
     const updatedEvent = await EventCollection.findOne({ title: "Event 1" });
     expect(updatedEvent.attendees[updatedEvent.attendees.length - 1]).toEqual({

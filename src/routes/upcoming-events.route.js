@@ -77,8 +77,6 @@ upcomingEventsRouter.post(
     try {
       const user = req.user;
       const registeredEvent = req.event;
-      // const loggedInUser = await UserModel.findOne({ _id: userId });
-      // if (registeredEvent && loggedInUser) {
       if (registeredEvent) {
         registeredEvent.attendees.push({
           _id: user._id,
@@ -90,9 +88,6 @@ upcomingEventsRouter.post(
       } else {
         return res.status(401).send({ message: "Event does not exist" });
       }
-      // else if (!loggedInUser) {
-      //   return res.status(404).send({ message: "User does not exist" });
-      // }
     } catch (err) {
       next(err);
     }

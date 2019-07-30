@@ -2,6 +2,7 @@ const { MongoClient } = require("mongodb");
 const request = require("supertest");
 const app = require("../../src/app");
 const mongoose = require("mongoose");
+const moment = require("moment");
 const mockEventsWithSeats = require("../../data/mockEventsWithSeats.data");
 const userData = require("../../data/user.data");
 require("../../src/models/user.model");
@@ -62,21 +63,23 @@ describe("user route", () => {
     expect(getResponse.status).toBe(200);
     expect(getResponse.body).toEqual(johnsEvents);
   });
+
+  it("GET / should return events in chronological order", async () => {
+    const jwtToken = generateToken({
+      email: "john@gmail.com",
+      name: "John"
+    });
+    const getResponse = await request(app)
+      .get("/user/registeredevents")
+      .set("Authorization", "Bearer " + jwtToken);
+    const getDates = getResponse.body.map(event =>
+      moment.utc(event.time).toDate()
+    );
+    expect(getDates[1] - getDates[0]).toBeGreaterThanOrEqual(0);
+    expect(getDates[2] - getDates[1]).toBeGreaterThanOrEqual(0);
+  });
 });
 const johnsEvents = [
-  {
-    _id: "5d2e798c8c4c740d685e1d3f",
-    title: "Event 1",
-    description: "Lorum Ipsum 1.",
-    fullDescription: "Full Lorum Ipsum 1.",
-    speaker: "Speaker 1",
-    speakerBio: "Speaker Bio 1",
-    time: "2019-08-17T19:00:00+08:00",
-    duration: 120,
-    location: "Location 1",
-    availableSeats: 100,
-    image: "https://via.placeholder.com/150.png?text=_"
-  },
   {
     _id: "5d2e7e4bec0f970d68a71466",
     title: "Event 3",
@@ -87,6 +90,19 @@ const johnsEvents = [
     time: "2019-08-15T18:00:00+08:00",
     duration: 90,
     location: "Location 3",
+    availableSeats: 100,
+    image: "https://via.placeholder.com/150.png?text=_"
+  },
+  {
+    _id: "5d2e798c8c4c740d685e1d3f",
+    title: "Event 1",
+    description: "Lorum Ipsum 1.",
+    fullDescription: "Full Lorum Ipsum 1.",
+    speaker: "Speaker 1",
+    speakerBio: "Speaker Bio 1",
+    time: "2019-08-17T19:00:00+08:00",
+    duration: 120,
+    location: "Location 1",
     availableSeats: 100,
     image: "https://via.placeholder.com/150.png?text=_"
   },

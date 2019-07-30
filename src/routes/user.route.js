@@ -1,6 +1,6 @@
 const express = require("express");
 const userRouter = express.Router();
-
+const moment = require("moment");
 const mongoose = require("mongoose");
 require("../models/event.model");
 const EventModel = mongoose.model("Event");
@@ -20,6 +20,9 @@ userRouter.get(
             .map(attendee => attendee.email)
             .includes(user.email);
         })
+        .sort((a, b) => {
+          return moment(a.time) - moment(b.time);
+        })
         .map(fileredEvent => {
           return {
             _id: fileredEvent._id,
@@ -37,7 +40,7 @@ userRouter.get(
         });
       res.status(200).json(userEvents);
     } catch (err) {
-      console.log("ERRO", err);
+      console.log("ERROR", err);
       next(err);
     }
   }

@@ -30,7 +30,7 @@ app.use(
   })
 );
 
-app.use(morgan("combined"));
+// app.use(morgan("combined"));
 app.use(express.json());
 app.use("/courses", coursesRouter);
 app.use("/users", usersRouter);
