@@ -44,10 +44,17 @@ describe("getUpComingEvents route", () => {
     insertMockEventsToTestDB();
   });
 
-  it("PUT /:eventId/user/:userID should add user to the list of attendees", async () => {
-    const response = await request(app).put(
-      "/upcomingevents/5d2e798c8c4c740d685e1d3f/user/5d2e85951b62fc093cc3318b"
-    );
+  it("POST /:eventId/user/registerevent should add user to the list of attendees", async () => {
+    const loginResponse = await request(app)
+      .post("/users/login")
+      .set("Content-Type", "application/json")
+      .send({ email: "john@gmail.com", password: "abcdefgh" });
+
+    const jwtToken = loginResponse.body.jwtToken;
+
+    const response = await request(app)
+      .post("/upcomingevents/5d2e798c8c4c740d685e1d3f/user/registerevent")
+      .set("Authorization", "Bearer " + jwtToken);
 
     expect(response.status).toBe(200);
 
@@ -60,27 +67,27 @@ describe("getUpComingEvents route", () => {
     });
   });
 
-  it("PUT /:eventId/user/:userID should return error when event id not valid", async () => {
-    const response = await request(app).put(
-      "/upcomingevents/wrongID/user/5d2e85951b62fc093cc3318b"
-    );
+  it("POST /:eventId/user/registerevent should return error when event id not valid", async () => {
+    const loginResponse = await request(app)
+      .post("/users/login")
+      .set("Content-Type", "application/json")
+      .send({ email: "john@gmail.com", password: "abcdefgh" });
+
+    const jwtToken = loginResponse.body.jwtToken;
+
+    const response = await request(app)
+      .post("/upcomingevents/wrongID/user/registerevent")
+      .set("Authorization", "Bearer " + jwtToken);
+
     expect(response.status).toBe(404);
     expect(response.body.message).toBe("Event ID not valid");
   });
 
-  it("PUT /:eventId/user/:userID should return error when event id does not exist", async () => {
-    const response = await request(app).put(
-      "/upcomingevents/5d2e7e1aec0f970d68a71499/user/5d2e85951b62fc093cc3318b"
+  it("POST /:eventId/user/registerevent should return error when event id does not exist", async () => {
+    const response = await request(app).post(
+      "/upcomingevents/5d2e7e1aec0f970d68a71499/user/registerevent"
     );
     expect(response.status).toBe(404);
     expect(response.body.message).toBe("The event does not exist");
-  });
-
-  it("PUT /:eventId/user/:userID should return error when user id does not exist", async () => {
-    const response = await request(app).put(
-      "/upcomingevents/5d2e798c8c4c740d685e1d3f/user/5d2e85951b62fc093cc3311b"
-    );
-    expect(response.status).toBe(404);
-    expect(response.body.message).toBe("User does not exist");
   });
 });

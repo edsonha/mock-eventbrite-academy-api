@@ -6,6 +6,8 @@ require("../models/event.model");
 const EventModel = mongoose.model("Event");
 const UserModel = mongoose.model("user");
 
+const authenticateUser = require("../middleware/authenticate-user");
+
 upcomingEventsRouter.get("/", async (req, res, next) => {
   try {
     const foundEvents = await EventModel.find();
@@ -68,25 +70,33 @@ upcomingEventsRouter.get("/:id", async (req, res, next) => {
   });
 });
 
-upcomingEventsRouter.put("/:id/user/:userId", async (req, res, next) => {
-  try {
-    const { userId } = req.params;
-    const registeredEvent = req.event;
-    const loggedInUser = await UserModel.findOne({ _id: userId });
-    if (registeredEvent && loggedInUser) {
-      registeredEvent.attendees.push({
-        _id: userId,
-        name: loggedInUser.name,
-        email: loggedInUser.email
-      });
-      await registeredEvent.save();
-      res.sendStatus(200);
-    } else if (!loggedInUser) {
-      return res.status(404).send({ message: "User does not exist" });
+upcomingEventsRouter.post(
+  "/:id/user/registerevent",
+  authenticateUser,
+  async (req, res, next) => {
+    try {
+      const user = req.user;
+      const registeredEvent = req.event;
+      // const loggedInUser = await UserModel.findOne({ _id: userId });
+      // if (registeredEvent && loggedInUser) {
+      if (registeredEvent) {
+        registeredEvent.attendees.push({
+          _id: user._id,
+          name: user.name,
+          email: user.email
+        });
+        await registeredEvent.save();
+        res.sendStatus(200);
+      } else {
+        return res.status(401).send({ message: "Event does not exist" });
+      }
+      // else if (!loggedInUser) {
+      //   return res.status(404).send({ message: "User does not exist" });
+      // }
+    } catch (err) {
+      next(err);
     }
-  } catch (err) {
-    next(err);
   }
-});
+);
 
 module.exports = upcomingEventsRouter;

@@ -385,29 +385,6 @@ describe("user route", () => {
       expect(signupResponse.body.name).toBe(loginResponse.body.name);
     });
 
-    xit("POST / should deny registration if there is an internal server error", async () => {
-      const mockingoose = require("mockingoose").default;
-      mockingoose(UserModel).toReturn(new Error("my test"), "findOne");
-
-      const newUser = {
-        name: "Sally",
-        email: "sally@hotmail.com",
-        password: "password123!@#",
-        passwordConfirmation: "password123!@#"
-      };
-
-      const response = await request(app)
-        .post("/users/register")
-        .set("Content-Type", "application/json")
-        .send(newUser);
-
-      expect(response.status).toBe(500);
-      expect(response.body.message).toBe(
-        "Something went wrong, please try again"
-      );
-      mockingoose(UserModel).reset("findOne");
-    });
-
     it("GET /secure should reject access with valid JWT token and unmatched user", async () => {
       const loginResponse = await request(app)
         .post("/users/login")
