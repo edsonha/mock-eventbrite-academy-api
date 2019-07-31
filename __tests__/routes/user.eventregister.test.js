@@ -5,7 +5,7 @@ const mockEventsWithSeats = require("../../data/mockEventsWithSeats.data");
 const userData = require("../../data/mockUsers.data.js");
 const mongoose = require("mongoose");
 
-describe("getUpComingEvents route", () => {
+describe("User Action", () => {
   let connection;
   let db;
 
@@ -52,66 +52,101 @@ describe("getUpComingEvents route", () => {
     return loginResponse.body.jwtToken;
   };
 
-  it("POST /:eventId/user/registerevent should add user to the list of attendees", async () => {
-    const jwtToken = await getJwt();
+  describe("User Registration", () => {
+    it("POST /:eventId/user/registerevent should add user to the list of attendees", async () => {
+      const jwtToken = await getJwt();
 
-    const response = await request(app)
-      .post("/upcomingevents/5d2e798c8c4c740d685e1d3f/user/registerevent")
-      .set("Authorization", "Bearer " + jwtToken);
-    expect(response.status).toBe(200);
+      const response = await request(app)
+        .post("/upcomingevents/5d2e798c8c4c740d685e1d3f/user/registerevent")
+        .set("Authorization", "Bearer " + jwtToken);
+      expect(response.status).toBe(200);
 
-    const EventCollection = await db.collection("events");
-    const updatedEvent = await EventCollection.findOne({ title: "Event 1" });
-    expect(updatedEvent.attendees[updatedEvent.attendees.length - 1]).toEqual({
-      _id: "5d2e85951b62fc093cc3318b",
-      name: "John",
-      email: "john@gmail.com"
+      const EventCollection = await db.collection("events");
+      const updatedEvent = await EventCollection.findOne({ title: "Event 1" });
+      expect(updatedEvent.attendees[updatedEvent.attendees.length - 1]).toEqual(
+        {
+          _id: "5d2e85951b62fc093cc3318b",
+          name: "John",
+          email: "john@gmail.com"
+        }
+      );
+    });
+
+    it("POST /:eventId/user/registerevent should return error when event id not valid", async () => {
+      const jwtToken = await getJwt();
+
+      const response = await request(app)
+        .post("/upcomingevents/wrongID/user/registerevent")
+        .set("Authorization", "Bearer " + jwtToken);
+
+      expect(response.status).toBe(404);
+      expect(response.body.message).toBe("Event ID not valid");
+    });
+
+    it("POST /:eventId/user/registerevent should return error when event id does not exist", async () => {
+      const response = await request(app).post(
+        "/upcomingevents/5d2e7e1aec0f970d68a71499/user/registerevent"
+      );
+
+      expect(response.status).toBe(404);
+      expect(response.body.message).toBe("The event does not exist");
+    });
+
+    it("POST /:eventId/user/registerevent should decrement available seats for succesful registration", async () => {
+      const jwtToken = await getJwt();
+
+      const response = await request(app)
+        .post("/upcomingevents/5d2e798c8c4c740d685e1d3f/user/registerevent")
+        .set("Authorization", "Bearer " + jwtToken);
+      expect(response.status).toBe(200);
+
+      const EventCollection = await db.collection("events");
+      const updatedEvent = await EventCollection.findOne({ title: "Event 1" });
+      expect(updatedEvent.availableSeats).toBe(99);
+    });
+
+    it("POST /:eventId/user/registerevent should return 422 if there are no available seats", async () => {
+      const jwtToken = await getJwt();
+
+      const response = await request(app)
+        .post("/upcomingevents/5d2e7e1aec0f970d68a71465/user/registerevent")
+        .set("Authorization", "Bearer " + jwtToken);
+      expect(response.status).toBe(422);
+
+      const EventCollection = await db.collection("events");
+      const updatedEvent = await EventCollection.findOne({ title: "Event 2" });
+      expect(updatedEvent.availableSeats).toBe(0);
     });
   });
 
-  it("POST /:eventId/user/registerevent should return error when event id not valid", async () => {
-    const jwtToken = await getJwt();
+  describe("User Deregistration", () => {
+    it("PUT /:eventId/user/deregisterevent should deregister user from an event", async () => {
+      const jwtToken = await getJwt();
+      const response = await request(app)
+        .put("/upcomingevents/5d2e798c8c4c740d685e1d3f/user/deregisterevent")
+        .set("Authorization", "Bearer " + jwtToken);
+      expect(response.status).toBe(200);
 
-    const response = await request(app)
-      .post("/upcomingevents/wrongID/user/registerevent")
-      .set("Authorization", "Bearer " + jwtToken);
+      const EventCollection = await db.collection("events");
+      const updatedEvent = await EventCollection.findOne({ title: "Event 1" });
 
-    expect(response.status).toBe(404);
-    expect(response.body.message).toBe("Event ID not valid");
-  });
+      expect(
+        updatedEvent.attendees.includes({
+          _id: "5d2e85951b62fc093cc3318b",
+          name: "John",
+          email: "john@gmail.com"
+        })
+      ).toBeFalsy();
+      expect(updatedEvent.availableSeats).toBe(101);
+    });
 
-  it("POST /:eventId/user/registerevent should return error when event id does not exist", async () => {
-    const response = await request(app).post(
-      "/upcomingevents/5d2e7e1aec0f970d68a71499/user/registerevent"
-    );
+    // it.only("PUT /:eventId/user/deregisterevent should not deregister user from an event if user is not registered", async () => {
+    //   const jwtToken = await getJwt();
+    //   const response = await request(app)
+    //     .put("/upcomingevents/5d2e7e1aec0f970d68a71465/user/deregisterevent")
+    //     .set("Authorization", "Bearer " + jwtToken);
 
-    expect(response.status).toBe(404);
-    expect(response.body.message).toBe("The event does not exist");
-  });
-
-  it("POST /:eventId/user/registerevent should decrement available seats for succesful registration", async () => {
-    const jwtToken = await getJwt();
-
-    const response = await request(app)
-      .post("/upcomingevents/5d2e798c8c4c740d685e1d3f/user/registerevent")
-      .set("Authorization", "Bearer " + jwtToken);
-    expect(response.status).toBe(200);
-
-    const EventCollection = await db.collection("events");
-    const updatedEvent = await EventCollection.findOne({ title: "Event 1" });
-    expect(updatedEvent.availableSeats).toBe(99);
-  });
-
-  it("POST /:eventId/user/registerevent should return 422 if there are no available seats", async () => {
-    const jwtToken = await getJwt();
-
-    const response = await request(app)
-      .post("/upcomingevents/5d2e7e1aec0f970d68a71465/user/registerevent")
-      .set("Authorization", "Bearer " + jwtToken);
-    expect(response.status).toBe(422);
-
-    const EventCollection = await db.collection("events");
-    const updatedEvent = await EventCollection.findOne({ title: "Event 2" });
-    expect(updatedEvent.availableSeats).toBe(0);
+    //   expect(response.status).toBe(401);
+    // });
   });
 });

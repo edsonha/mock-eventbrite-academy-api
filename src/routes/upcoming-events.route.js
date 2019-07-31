@@ -100,4 +100,24 @@ upcomingEventsRouter.post(
   }
 );
 
+upcomingEventsRouter.put(
+  "/:id/user/deregisterevent",
+  authenticateUser,
+  async (req, res, next) => {
+    try {
+      const registeredEvent = req.event;
+      if (registeredEvent) {
+        registeredEvent.attendees.filter(
+          attendee => JSON.stringify(req.user) !== JSON.stringify(attendee)
+        );
+        registeredEvent.availableSeats++;
+        await registeredEvent.save();
+        res.sendStatus(200);
+      }
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
 module.exports = upcomingEventsRouter;
