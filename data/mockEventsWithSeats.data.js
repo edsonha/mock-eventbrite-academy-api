@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const attendees = require("./user.data");
+const attendees = require("./mockUsers.data");
 
 const mockEventsWithSeats = [
   {

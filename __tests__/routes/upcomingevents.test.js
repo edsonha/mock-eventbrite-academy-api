@@ -2,7 +2,7 @@ const app = require("../../src/app");
 const request = require("supertest");
 const { MongoClient } = require("mongodb");
 const mockEventsWithSeats = require("../../data/mockEventsWithSeats.data");
-const userData = require("../../data/user.data.js");
+const userData = require("../../data/mockUsers.data.js");
 const moment = require("moment");
 const mongoose = require("mongoose");
 

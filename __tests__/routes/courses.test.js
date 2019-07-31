@@ -34,6 +34,7 @@ describe("courses route", () => {
     await CourseModel.insertMany(mockCourses);
     const response = await request(app).get("/courses");
     expect(response.status).toBe(200);
+
     const mockCoursesWithStringID = [];
     for (let i = 0; i < mockCourses.length; i++) {
       mockCoursesWithStringID.push(JSON.parse(JSON.stringify(mockCourses[i])));
@@ -42,6 +43,7 @@ describe("courses route", () => {
       course._id = String(course._id);
       return course;
     });
+
     expect(response.body).toEqual(mockCoursesWithStringID);
   });
 

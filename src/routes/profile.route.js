@@ -1,5 +1,5 @@
 const express = require("express");
-const userRouter = express.Router();
+const profileRouter = express.Router();
 const moment = require("moment");
 const mongoose = require("mongoose");
 require("../models/event.model");
@@ -7,7 +7,7 @@ const EventModel = mongoose.model("Event");
 
 const authenticateUser = require("../middleware/authenticate-user");
 
-userRouter.get(
+profileRouter.get(
   "/registeredevents",
   authenticateUser,
   async (req, res, next) => {
@@ -46,4 +46,4 @@ userRouter.get(
   }
 );
 
-module.exports = userRouter;
+module.exports = profileRouter;

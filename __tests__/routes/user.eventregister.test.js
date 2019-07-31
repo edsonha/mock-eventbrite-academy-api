@@ -2,7 +2,7 @@ const app = require("../../src/app");
 const request = require("supertest");
 const { MongoClient } = require("mongodb");
 const mockEventsWithSeats = require("../../data/mockEventsWithSeats.data");
-const userData = require("../../data/user.data.js");
+const userData = require("../../data/mockUsers.data.js");
 const mongoose = require("mongoose");
 
 describe("getUpComingEvents route", () => {
@@ -44,19 +44,22 @@ describe("getUpComingEvents route", () => {
     insertMockEventsToTestDB();
   });
 
-  it("POST /:eventId/user/registerevent should add user to the list of attendees", async () => {
+  const getJwt = async () => {
     const loginResponse = await request(app)
       .post("/users/login")
       .set("Content-Type", "application/json")
       .send({ email: "john@gmail.com", password: "abcdefgh" });
+    return loginResponse.body.jwtToken;
+  };
 
-    const jwtToken = loginResponse.body.jwtToken;
+  it("POST /:eventId/user/registerevent should add user to the list of attendees", async () => {
+    const jwtToken = await getJwt();
 
     const response = await request(app)
       .post("/upcomingevents/5d2e798c8c4c740d685e1d3f/user/registerevent")
       .set("Authorization", "Bearer " + jwtToken);
-
     expect(response.status).toBe(200);
+
     const EventCollection = await db.collection("events");
     const updatedEvent = await EventCollection.findOne({ title: "Event 1" });
     expect(updatedEvent.attendees[updatedEvent.attendees.length - 1]).toEqual({
@@ -67,12 +70,7 @@ describe("getUpComingEvents route", () => {
   });
 
   it("POST /:eventId/user/registerevent should return error when event id not valid", async () => {
-    const loginResponse = await request(app)
-      .post("/users/login")
-      .set("Content-Type", "application/json")
-      .send({ email: "john@gmail.com", password: "abcdefgh" });
-
-    const jwtToken = loginResponse.body.jwtToken;
+    const jwtToken = await getJwt();
 
     const response = await request(app)
       .post("/upcomingevents/wrongID/user/registerevent")
@@ -86,22 +84,17 @@ describe("getUpComingEvents route", () => {
     const response = await request(app).post(
       "/upcomingevents/5d2e7e1aec0f970d68a71499/user/registerevent"
     );
+
     expect(response.status).toBe(404);
     expect(response.body.message).toBe("The event does not exist");
   });
 
   it("POST /:eventId/user/registerevent should decrement available seats for succesful registration", async () => {
-    const loginResponse = await request(app)
-      .post("/users/login")
-      .set("Content-Type", "application/json")
-      .send({ email: "john@gmail.com", password: "abcdefgh" });
-
-    const jwtToken = loginResponse.body.jwtToken;
+    const jwtToken = await getJwt();
 
     const response = await request(app)
       .post("/upcomingevents/5d2e798c8c4c740d685e1d3f/user/registerevent")
       .set("Authorization", "Bearer " + jwtToken);
-
     expect(response.status).toBe(200);
 
     const EventCollection = await db.collection("events");
@@ -110,18 +103,13 @@ describe("getUpComingEvents route", () => {
   });
 
   it("POST /:eventId/user/registerevent should return 422 if there are no available seats", async () => {
-    const loginResponse = await request(app)
-      .post("/users/login")
-      .set("Content-Type", "application/json")
-      .send({ email: "john@gmail.com", password: "abcdefgh" });
-
-    const jwtToken = loginResponse.body.jwtToken;
+    const jwtToken = await getJwt();
 
     const response = await request(app)
       .post("/upcomingevents/5d2e7e1aec0f970d68a71465/user/registerevent")
       .set("Authorization", "Bearer " + jwtToken);
-
     expect(response.status).toBe(422);
+
     const EventCollection = await db.collection("events");
     const updatedEvent = await EventCollection.findOne({ title: "Event 2" });
     expect(updatedEvent.availableSeats).toBe(0);
