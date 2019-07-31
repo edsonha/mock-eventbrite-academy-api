@@ -89,4 +89,41 @@ describe("getUpComingEvents route", () => {
     expect(response.status).toBe(404);
     expect(response.body.message).toBe("The event does not exist");
   });
+
+  it("POST /:eventId/user/registerevent should decrement available seats for succesful registration", async () => {
+    const loginResponse = await request(app)
+      .post("/users/login")
+      .set("Content-Type", "application/json")
+      .send({ email: "john@gmail.com", password: "abcdefgh" });
+
+    const jwtToken = loginResponse.body.jwtToken;
+
+    const response = await request(app)
+      .post("/upcomingevents/5d2e798c8c4c740d685e1d3f/user/registerevent")
+      .set("Authorization", "Bearer " + jwtToken);
+
+    expect(response.status).toBe(200);
+
+    const EventCollection = await db.collection("events");
+    const updatedEvent = await EventCollection.findOne({ title: "Event 1" });
+    expect(updatedEvent.availableSeats).toBe(99);
+  });
+
+  it("POST /:eventId/user/registerevent should return 422 if there are no available seats", async () => {
+    const loginResponse = await request(app)
+      .post("/users/login")
+      .set("Content-Type", "application/json")
+      .send({ email: "john@gmail.com", password: "abcdefgh" });
+
+    const jwtToken = loginResponse.body.jwtToken;
+
+    const response = await request(app)
+      .post("/upcomingevents/5d2e7e1aec0f970d68a71465/user/registerevent")
+      .set("Authorization", "Bearer " + jwtToken);
+
+    expect(response.status).toBe(422);
+    const EventCollection = await db.collection("events");
+    const updatedEvent = await EventCollection.findOne({ title: "Event 2" });
+    expect(updatedEvent.availableSeats).toBe(0);
+  });
 });

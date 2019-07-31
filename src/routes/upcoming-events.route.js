@@ -78,13 +78,19 @@ upcomingEventsRouter.post(
       const user = req.user;
       const registeredEvent = req.event;
       if (registeredEvent) {
-        registeredEvent.attendees.push({
-          _id: user._id,
-          name: user.name,
-          email: user.email
-        });
-        await registeredEvent.save();
-        res.sendStatus(200);
+        if (registeredEvent.availableSeats > 0) {
+          registeredEvent.attendees.push({
+            _id: user._id,
+            name: user.name,
+            email: user.email
+          });
+          registeredEvent.availableSeats--;
+          await registeredEvent.save();
+
+          res.sendStatus(200);
+        } else {
+          res.sendStatus(422);
+        }
       } else {
         return res.status(401).send({ message: "Event does not exist" });
       }
