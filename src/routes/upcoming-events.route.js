@@ -78,7 +78,10 @@ upcomingEventsRouter.post(
       const user = req.user;
       const registeredEvent = req.event;
       if (registeredEvent) {
-        if (registeredEvent.availableSeats > 0) {
+        const isUserRegistered = registeredEvent.attendees.find(attendee => {
+          return attendee.email === req.user.email;
+        });
+        if (!isUserRegistered && registeredEvent.availableSeats > 0) {
           registeredEvent.attendees.push({
             _id: user._id,
             name: user.name,

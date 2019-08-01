@@ -13,19 +13,6 @@ const mockJohnEvents = [
     image: "https://via.placeholder.com/150.png?text=_"
   },
   {
-    _id: "5d2e798c8c4c740d685e1d3f",
-    title: "Event 1",
-    description: "Lorum Ipsum 1.",
-    fullDescription: "Full Lorum Ipsum 1.",
-    speaker: "Speaker 1",
-    speakerBio: "Speaker Bio 1",
-    time: "2019-08-17T19:00:00+08:00",
-    duration: 120,
-    location: "Location 1",
-    availableSeats: 100,
-    image: "https://via.placeholder.com/150.png?text=_"
-  },
-  {
     _id: "5d2e7dd7ec0f970d68a71464",
     title: "Event 4",
     description: "Lorum Ipsum 4.",

@@ -16,7 +16,7 @@ const mockEventsWithSeats = [
     location: "Location 1",
     availableSeats: 100,
     image: "https://via.placeholder.com/150.png?text=_",
-    attendees: [johnAttendee]
+    attendees: []
   },
   {
     _id: mongoose.Types.ObjectId("5d2e7e1aec0f970d68a71465"),

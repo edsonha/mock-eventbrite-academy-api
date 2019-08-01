@@ -5,7 +5,7 @@ const mockEventsWithSeats = require("../../data/mockEventsWithSeats.data");
 const userData = require("../../data/mockUsers.data.js");
 const mongoose = require("mongoose");
 
-describe("User Action", () => {
+describe("Register/deregister", () => {
   let connection;
   let db;
 
@@ -117,6 +117,15 @@ describe("User Action", () => {
       const updatedEvent = await EventCollection.findOne({ title: "Event 2" });
       expect(updatedEvent.availableSeats).toBe(0);
     });
+
+    it("POST /:eventId/user/registerevent should return 422 if registered user try to register again", async () => {
+      const jwtToken = await getJwt();
+
+      const response = await request(app)
+        .post("/upcomingevents/5d2e7e4bec0f970d68a71466/user/registerevent")
+        .set("Authorization", "Bearer " + jwtToken);
+      expect(response.status).toBe(422);
+    });
   });
 
   describe("User Deregistration", () => {
@@ -139,14 +148,5 @@ describe("User Action", () => {
       ).toBeFalsy();
       expect(updatedEvent.availableSeats).toBe(101);
     });
-
-    // it.only("PUT /:eventId/user/deregisterevent should not deregister user from an event if user is not registered", async () => {
-    //   const jwtToken = await getJwt();
-    //   const response = await request(app)
-    //     .put("/upcomingevents/5d2e7e1aec0f970d68a71465/user/deregisterevent")
-    //     .set("Authorization", "Bearer " + jwtToken);
-
-    //   expect(response.status).toBe(401);
-    // });
   });
 });

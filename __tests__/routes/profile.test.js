@@ -10,7 +10,7 @@ require("../../src/models/event.model");
 const { generateToken } = require("../../src/routes/users.route");
 const mockJohnEvents = require("../../data/mockJohnEvents.data");
 
-describe("user route", () => {
+describe("Profile route", () => {
   let connection;
   let db;
 
@@ -75,6 +75,5 @@ describe("user route", () => {
       moment.utc(event.time).toDate()
     );
     expect(getDates[1] - getDates[0]).toBeGreaterThanOrEqual(0);
-    expect(getDates[2] - getDates[1]).toBeGreaterThanOrEqual(0);
   });
 });
