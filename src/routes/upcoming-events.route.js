@@ -108,10 +108,14 @@ upcomingEventsRouter.put(
   authenticateUser,
   async (req, res, next) => {
     try {
+      const user = JSON.parse(JSON.stringify(req.user));
+      delete user["password"];
       const registeredEvent = req.event;
       if (registeredEvent) {
-        registeredEvent.attendees.filter(
-          attendee => JSON.stringify(req.user) !== JSON.stringify(attendee)
+        registeredEvent.attendees = registeredEvent.attendees.filter(
+          attendee => {
+            return JSON.stringify(user) !== JSON.stringify(attendee);
+          }
         );
         registeredEvent.availableSeats++;
         await registeredEvent.save();

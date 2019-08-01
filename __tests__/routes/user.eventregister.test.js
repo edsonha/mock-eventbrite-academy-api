@@ -132,19 +132,17 @@ describe("Register/deregister", () => {
     it("PUT /:eventId/user/deregisterevent should deregister user from an event", async () => {
       const jwtToken = await getJwt();
       const response = await request(app)
-        .put("/upcomingevents/5d2e798c8c4c740d685e1d3f/user/deregisterevent")
+        .put("/upcomingevents/5d2e7e4bec0f970d68a71466/user/deregisterevent")
         .set("Authorization", "Bearer " + jwtToken);
       expect(response.status).toBe(200);
 
       const EventCollection = await db.collection("events");
-      const updatedEvent = await EventCollection.findOne({ title: "Event 1" });
+      const updatedEvent = await EventCollection.findOne({ title: "Event 3" });
 
       expect(
-        updatedEvent.attendees.includes({
-          _id: "5d2e85951b62fc093cc3318b",
-          name: "John",
-          email: "john@gmail.com"
-        })
+        updatedEvent.attendees
+          .map(attendee => attendee.email)
+          .includes("john@gmail.com")
       ).toBeFalsy();
       expect(updatedEvent.availableSeats).toBe(101);
     });
