@@ -31,7 +31,7 @@ validateRegistration = user => {
 const generateToken = foundUser =>
   jwt.sign(
     { sub: foundUser.email, user: foundUser.name, iat: new Date().getTime() },
-    process.env.JWT_SECRET,
+    process.env.JWT_KEY,
     { expiresIn: "1h" }
   );
 

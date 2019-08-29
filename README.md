@@ -36,7 +36,7 @@ It provides all the functionality that the front end is expecting on Sign Up, Lo
 https://eventbrite-academy-ui.herokuapp.com/
 
 ```
-To enter as Guest, please use
+To enter as Guest, please use this login detail:
 Email: guest@gmail.com
 Password: qwerty123$
 ```

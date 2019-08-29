@@ -9,10 +9,7 @@ const authenticateUser = async (req, res, next) => {
     res.sendStatus(401);
   }
   try {
-    const payload = jwt.verify(
-      bearerHeader.split(" ")[1],
-      process.env.JWT_SECRET
-    );
+    const payload = jwt.verify(bearerHeader.split(" ")[1], process.env.JWT_KEY);
     const foundUser = await UserModel.findOne({ email: payload.sub });
     if (foundUser) {
       req.user = foundUser;
