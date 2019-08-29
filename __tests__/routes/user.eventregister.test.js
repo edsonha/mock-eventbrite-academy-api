@@ -4,6 +4,7 @@ const { MongoClient } = require("mongodb");
 const mockEventsWithSeats = require("../../data/mockEventsWithSeats.data");
 const userData = require("../../data/mockUsers.data.js");
 const mongoose = require("mongoose");
+require("dotenv").config({ silent: process.env.NODE_ENV === "production" });
 
 describe("Register/deregister", () => {
   let connection;

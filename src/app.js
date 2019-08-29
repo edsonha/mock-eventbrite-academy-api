@@ -1,5 +1,4 @@
 require("./utils/db");
-require("dotenv").config({ silent: process.env.NODE_ENV === "production" });
 const express = require("express");
 const app = express();
 require("./models/user.model");
