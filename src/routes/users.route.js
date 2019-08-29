@@ -6,7 +6,6 @@ const UserModel = mongoose.model("user");
 const Joi = require("@hapi/joi");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const secretKey = require("../utils/key");
 const authenticateUser = require("../middleware/authenticate-user");
 
 validateRegistration = user => {
@@ -24,8 +23,6 @@ validateRegistration = user => {
       .regex(
         /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d!@#$%^&*()_+]{8,30}$/
       ),
-    // .min(8)
-    // .max(30)
     passwordConfirmation: Joi.string()
   };
   return Joi.validate(user, schema);
@@ -34,7 +31,7 @@ validateRegistration = user => {
 const generateToken = foundUser =>
   jwt.sign(
     { sub: foundUser.email, user: foundUser.name, iat: new Date().getTime() },
-    secretKey,
+    process.env.JWT_SECRET,
     { expiresIn: "1h" }
   );
 

@@ -1,5 +1,4 @@
 const jwt = require("jsonwebtoken");
-const secretKey = require("../utils/key");
 const mongoose = require("mongoose");
 require("../models/user.model");
 const UserModel = mongoose.model("user");
@@ -10,7 +9,10 @@ const authenticateUser = async (req, res, next) => {
     res.sendStatus(401);
   }
   try {
-    const payload = jwt.verify(bearerHeader.split(" ")[1], secretKey);
+    const payload = jwt.verify(
+      bearerHeader.split(" ")[1],
+      process.env.JWT_SECRET
+    );
     const foundUser = await UserModel.findOne({ email: payload.sub });
     if (foundUser) {
       req.user = foundUser;

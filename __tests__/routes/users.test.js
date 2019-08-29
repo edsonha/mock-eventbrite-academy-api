@@ -2,7 +2,6 @@ const { MongoClient } = require("mongodb");
 const request = require("supertest");
 const app = require("../../src/app");
 const mongoose = require("mongoose");
-const mockEventsWithSeats = require("../../data/mockEventsWithSeats.data");
 const userData = require("../../data/mockUsers.data");
 require("../../src/models/user.model");
 const UserModel = mongoose.model("user");

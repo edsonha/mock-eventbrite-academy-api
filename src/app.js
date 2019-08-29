@@ -1,10 +1,9 @@
 require("./utils/db");
+require("dotenv").config();
 const express = require("express");
-const morgan = require("morgan");
 const app = express();
 require("./models/user.model");
 
-const jwt = require("jsonwebtoken");
 const upcomingEventsRouter = require("./routes/upcoming-events.route");
 const { usersRouter } = require("./routes/users.route");
 const profileRouter = require("./routes/profile.route");
@@ -30,7 +29,6 @@ app.use(
   })
 );
 
-// app.use(morgan("combined"));
 app.use(express.json());
 app.use("/courses", coursesRouter);
 app.use("/users", usersRouter);
@@ -38,12 +36,6 @@ app.use("/profile", profileRouter);
 app.use("/upcomingevents", upcomingEventsRouter);
 
 app.use((err, req, res, next) => {
-  // if (!err.statusCode) {
-  //   res.status(500).json({ err: "Internal server error" });
-  // } else {
-  //   res.status(err.statusCode).json({ err: err.message });
-  // }
-  // console.log("error", err);
   res.status(500).json({ message: err.message });
 });
 
