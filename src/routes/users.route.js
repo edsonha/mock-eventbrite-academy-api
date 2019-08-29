@@ -6,6 +6,7 @@ const UserModel = mongoose.model("user");
 const Joi = require("@hapi/joi");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const secretKey = require("../utils/keys");
 const authenticateUser = require("../middleware/authenticate-user");
 
 validateRegistration = user => {
@@ -31,7 +32,7 @@ validateRegistration = user => {
 const generateToken = foundUser =>
   jwt.sign(
     { sub: foundUser.email, user: foundUser.name, iat: new Date().getTime() },
-    process.env.JWT_KEY,
+    secretKey,
     { expiresIn: "1h" }
   );
 

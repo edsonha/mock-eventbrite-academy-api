@@ -5,7 +5,6 @@ const mongoose = require("mongoose");
 const userData = require("../../data/mockUsers.data");
 require("../../src/models/user.model");
 const UserModel = mongoose.model("user");
-require("dotenv").config({ silent: process.env.NODE_ENV === "production" });
 
 describe("user route", () => {
   let connection;

@@ -9,7 +9,6 @@ require("../../src/models/user.model");
 require("../../src/models/event.model");
 const { generateToken } = require("../../src/routes/users.route");
 const mockJohnEvents = require("../../data/mockJohnEvents.data");
-require("dotenv").config({ silent: process.env.NODE_ENV === "production" });
 
 describe("Profile route", () => {
   let connection;
