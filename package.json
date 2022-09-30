@@ -40,7 +40,7 @@
   },
   "homepage": "https://github.com/Mystashaway/stashaway-api#readme",
   "dependencies": {
-    "@hapi/joi": "^15.1.0",
+    "@hapi/joi": "^15.1.1",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^8.0.0",
